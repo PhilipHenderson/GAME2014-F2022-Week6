@@ -8,7 +8,7 @@ public class BulletFactory : MonoBehaviour
     // Bullet Prefab
     private GameObject bulletPrefab;
 
-    //sprite texture, to swap things out
+    // Sprite Textures
     private Sprite playerBulletSprite;
     private Sprite enemyBulletSprite;
 
@@ -37,7 +37,6 @@ public class BulletFactory : MonoBehaviour
         switch (type)
         {
             case BulletType.PLAYER:
-                
                 bullet.GetComponent<SpriteRenderer>().sprite = playerBulletSprite;
                 bullet.GetComponent<BulletBehaviour>().SetDirection(BulletDirection.UP);
                 bullet.name = "PlayerBullet";
@@ -45,13 +44,13 @@ public class BulletFactory : MonoBehaviour
             case BulletType.ENEMY:
                 bullet.GetComponent<SpriteRenderer>().sprite = enemyBulletSprite;
                 bullet.GetComponent<BulletBehaviour>().SetDirection(BulletDirection.DOWN);
-                bullet.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                bullet.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 180.0f);
                 bullet.name = "EnemyBullet";
                 break;
         }
 
-
         bullet.SetActive(false);
         return bullet;
     }
+
 }

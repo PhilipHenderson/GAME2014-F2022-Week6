@@ -12,18 +12,17 @@ public struct ScreenBounds
 }
 
 
-
 public class BulletBehaviour : MonoBehaviour
 {
     [Header("Bullet Properties")]
-    public float speed;
     public BulletDirection bulletDirection;
+    public float speed;
     public ScreenBounds bounds;
     public BulletType bulletType;
 
-
     private Vector3 velocity;
     private BulletManager bulletManager;
+
     void Start()
     {
         bulletManager = FindObjectOfType<BulletManager>();
@@ -43,9 +42,9 @@ public class BulletBehaviour : MonoBehaviour
     void CheckBounds()
     {
         if ((transform.position.x > bounds.horizontal.max) ||
-           (transform.position.x < bounds.horizontal.min) ||
-           (transform.position.y > bounds.vertical.max) ||
-           (transform.position.y < bounds.vertical.min))
+            (transform.position.x < bounds.horizontal.min) ||
+            (transform.position.y > bounds.vertical.max) ||
+            (transform.position.y < bounds.vertical.min))
         {
             bulletManager.ReturnBullet(this.gameObject, bulletType);
         }
@@ -58,24 +57,26 @@ public class BulletBehaviour : MonoBehaviour
             case BulletDirection.UP:
                 velocity = Vector3.up * speed;
                 break;
+            case BulletDirection.RIGHT:
+                velocity = Vector3.right * speed;
+                break;
             case BulletDirection.DOWN:
                 velocity = Vector3.down * speed;
                 break;
             case BulletDirection.LEFT:
                 velocity = Vector3.left * speed;
                 break;
-            case BulletDirection.RIGHT:
-                velocity = Vector3.right * speed;
-                break;
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if ((bulletType == BulletType.PLAYER) || 
+        if ((bulletType == BulletType.PLAYER) ||
             (bulletType == BulletType.ENEMY && other.gameObject.CompareTag("Player")))
         {
             bulletManager.ReturnBullet(this.gameObject, bulletType);
         }
+
     }
+
 }

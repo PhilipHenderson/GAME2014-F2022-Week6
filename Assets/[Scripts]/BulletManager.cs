@@ -6,8 +6,7 @@ using UnityEngine;
 public class BulletManager : MonoBehaviour
 {
     [Header("Bullet Properties")]
-
-    [Range(10,50)]
+    [Range(10, 50)]
     public int playerBulletNumber = 50;
     public int playerBulletCount = 0;
     public int activePlayerBullets = 0;
@@ -23,8 +22,8 @@ public class BulletManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerBulletPool = new Queue<GameObject>(); // creates an empty queue containter
-        enemyBulletPool = new Queue<GameObject>(); // creates an empty queue containter
+        playerBulletPool = new Queue<GameObject>(); // creates an empty queue container
+        enemyBulletPool = new Queue<GameObject>(); // creates an empty queue container
         factory = GameObject.FindObjectOfType<BulletFactory>();
         BuildBulletPools();
     }
@@ -41,10 +40,11 @@ public class BulletManager : MonoBehaviour
             enemyBulletPool.Enqueue(factory.CreateBullet(BulletType.ENEMY));
         }
 
-
+        // stats
         playerBulletCount = playerBulletPool.Count;
         enemyBulletCount = enemyBulletPool.Count;
     }
+
 
     public GameObject GetBullet(Vector2 position, BulletType type)
     {
@@ -59,6 +59,7 @@ public class BulletManager : MonoBehaviour
                         playerBulletPool.Enqueue(factory.CreateBullet(BulletType.PLAYER));
                     }
                     bullet = playerBulletPool.Dequeue();
+                    // stats
                     playerBulletCount = playerBulletPool.Count;
                     activePlayerBullets++;
                 }
@@ -70,16 +71,15 @@ public class BulletManager : MonoBehaviour
                         enemyBulletPool.Enqueue(factory.CreateBullet(BulletType.ENEMY));
                     }
                     bullet = enemyBulletPool.Dequeue();
+                    // stats
                     enemyBulletCount = enemyBulletPool.Count;
                     activeEnemyBullets++;
-                    
                 }
                 break;
         }
-        
+
         bullet.SetActive(true);
         bullet.transform.position = position;
-
 
         return bullet;
     }
@@ -91,21 +91,17 @@ public class BulletManager : MonoBehaviour
         switch (type)
         {
             case BulletType.PLAYER:
-                {
-                    playerBulletPool.Enqueue(bullet);
-                    //stats
-                    playerBulletCount = playerBulletPool.Count;
-                    activePlayerBullets--;
-                    break;
-                }
+                playerBulletPool.Enqueue(bullet);
+                //stats
+                playerBulletCount = playerBulletPool.Count;
+                activePlayerBullets--;
+                break;
             case BulletType.ENEMY:
-                {
-                    enemyBulletPool.Enqueue(bullet);
-                    //stats
-                    enemyBulletCount = enemyBulletPool.Count;
-                    activeEnemyBullets--;
-                    break;
-                }
+                enemyBulletPool.Enqueue(bullet);
+                //stats
+                enemyBulletCount = enemyBulletPool.Count;
+                activeEnemyBullets--;
+                break;
         }
     }
 }
