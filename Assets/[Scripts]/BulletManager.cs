@@ -10,11 +10,11 @@ public class BulletManager : MonoBehaviour
     [Range(10,50)]
     public int playerBulletNumber = 50;
     public int playerBulletCount = 0;
-    public int playerActiveBullets = 0;
+    public int activePlayerBullets = 0;
     [Range(10, 50)]
     public int enemyBulletNumber = 50;
     public int enemyBulletCount = 0;
-    public int enemyActiveBullets = 0;
+    public int activeEnemyBullets = 0;
 
     private BulletFactory factory;
     private Queue<GameObject> playerBulletPool;
@@ -60,9 +60,9 @@ public class BulletManager : MonoBehaviour
                     }
                     bullet = playerBulletPool.Dequeue();
                     playerBulletCount = playerBulletPool.Count;
-                    playerActiveBullets++;
-                    break;
+                    activePlayerBullets++;
                 }
+                break;
             case BulletType.ENEMY:
                 {
                     if (enemyBulletPool.Count < 1)
@@ -71,11 +71,10 @@ public class BulletManager : MonoBehaviour
                     }
                     bullet = enemyBulletPool.Dequeue();
                     enemyBulletCount = enemyBulletPool.Count;
-                    enemyActiveBullets++;
-                    break;
+                    activeEnemyBullets++;
+                    
                 }
-
-
+                break;
         }
         
         bullet.SetActive(true);
@@ -96,7 +95,7 @@ public class BulletManager : MonoBehaviour
                     playerBulletPool.Enqueue(bullet);
                     //stats
                     playerBulletCount = playerBulletPool.Count;
-                    playerActiveBullets--;
+                    activePlayerBullets--;
                     break;
                 }
             case BulletType.ENEMY:
@@ -104,15 +103,9 @@ public class BulletManager : MonoBehaviour
                     enemyBulletPool.Enqueue(bullet);
                     //stats
                     enemyBulletCount = enemyBulletPool.Count;
-                    enemyActiveBullets--;
+                    activeEnemyBullets--;
                     break;
                 }
         }
-
-
-
-        playerBulletPool.Enqueue(bullet);
-        playerBulletCount = playerBulletPool.Count;
-        playerActiveBullets--;
     }
 }

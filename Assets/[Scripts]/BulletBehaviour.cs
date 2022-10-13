@@ -18,14 +18,14 @@ public class BulletBehaviour : MonoBehaviour
     [Header("Bullet Properties")]
     public float speed;
     public BulletDirection bulletDirection;
-    public Vector3 velocity;
     public ScreenBounds bounds;
-    public BulletManager bulletManager;
     public BulletType bulletType;
 
+
+    private Vector3 velocity;
+    private BulletManager bulletManager;
     void Start()
     {
-        SetDirection(bulletDirection);
         bulletManager = FindObjectOfType<BulletManager>();
     }
 
@@ -72,6 +72,10 @@ public class BulletBehaviour : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        bulletManager.ReturnBullet(this.gameObject, bulletType);
+        if ((bulletType == BulletType.PLAYER) || 
+            (bulletType == BulletType.ENEMY && other.gameObject.CompareTag("Player")))
+        {
+            bulletManager.ReturnBullet(this.gameObject, bulletType);
+        }
     }
 }

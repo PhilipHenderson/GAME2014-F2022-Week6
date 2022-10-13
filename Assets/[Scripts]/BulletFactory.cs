@@ -6,14 +6,14 @@ using UnityEngine;
 public class BulletFactory : MonoBehaviour
 {
     // Bullet Prefab
-    public GameObject bulletPrefab;
+    private GameObject bulletPrefab;
 
     //sprite texture, to swap things out
-    public Sprite playerBulletSprite;
-    public Sprite enemyBulletSprite;
+    private Sprite playerBulletSprite;
+    private Sprite enemyBulletSprite;
 
     // Bullet Parent
-    public Transform bulletParent;
+    private Transform bulletParent;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +25,7 @@ public class BulletFactory : MonoBehaviour
     {
         playerBulletSprite = Resources.Load<Sprite>("Sprites/Bullet");
         enemyBulletSprite = Resources.Load<Sprite>("Sprites/EnemySmallBullet");
-        bulletPrefab = Resources.Load<GameObject>("Prefabs/PlayerBullet");
+        bulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet");
         bulletParent = GameObject.Find("Bullets").transform;
     }
 
@@ -40,11 +40,13 @@ public class BulletFactory : MonoBehaviour
                 
                 bullet.GetComponent<SpriteRenderer>().sprite = playerBulletSprite;
                 bullet.GetComponent<BulletBehaviour>().SetDirection(BulletDirection.UP);
+                bullet.name = "PlayerBullet";
                 break;
             case BulletType.ENEMY:
                 bullet.GetComponent<SpriteRenderer>().sprite = enemyBulletSprite;
                 bullet.GetComponent<BulletBehaviour>().SetDirection(BulletDirection.DOWN);
                 bullet.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                bullet.name = "EnemyBullet";
                 break;
         }
 
