@@ -6,60 +6,113 @@ using UnityEngine;
 public class BulletManager : MonoBehaviour
 {
     [Header("Bullet Properties")]
-    public Queue<GameObject> bulletPool;
-    public GameObject bulletPrefab;
-    public int bulletNumber = 50;
-    public Transform bulletParent;
-    public int bulletCount = 0;
-    public int activeBullets = 0;
+
+    [Range(10,50)]
+    public int playerBulletNumber = 50;
+    public int playerBulletCount = 0;
+    public int playerActiveBullets = 0;
+    [Range(10, 50)]
+    public int enemyBulletNumber = 50;
+    public int enemyBulletCount = 0;
+    public int enemyActiveBullets = 0;
+
+    private BulletFactory factory;
+    private Queue<GameObject> playerBulletPool;
+    private Queue<GameObject> enemyBulletPool;
 
     // Start is called before the first frame update
     void Start()
     {
-        bulletPool = new Queue<GameObject>();
-        BuildBulletPool();
+        playerBulletPool = new Queue<GameObject>(); // creates an empty queue containter
+        enemyBulletPool = new Queue<GameObject>(); // creates an empty queue containter
+        factory = GameObject.FindObjectOfType<BulletFactory>();
+        BuildBulletPools();
     }
 
-    void BuildBulletPool()
+    void BuildBulletPools()
     {
-        for (int i = 0; i < bulletNumber; i++)
+        for (int i = 0; i < playerBulletNumber; i++)
         {
-            CreateBullet();
+            playerBulletPool.Enqueue(factory.CreateBullet(BulletType.PLAYER));
         }
 
-        bulletCount = bulletPool.Count;
-    }
-
-    private void CreateBullet()
-    {
-        var bullet = Instantiate(bulletPrefab);
-        bullet.SetActive(false);
-        bullet.transform.SetParent(bulletParent);
-        bulletPool.Enqueue(bullet);
-    }
-
-    public GameObject GetBullet(Vector2 position, BulletDirection direction)
-    {
-        if (bulletPool.Count < 1)
+        for (int i = 0; i < enemyBulletNumber; i++)
         {
-            CreateBullet();
+            enemyBulletPool.Enqueue(factory.CreateBullet(BulletType.ENEMY));
         }
 
-        var bullet = bulletPool.Dequeue();
+
+        playerBulletCount = playerBulletPool.Count;
+        enemyBulletCount = enemyBulletPool.Count;
+    }
+
+    public GameObject GetBullet(Vector2 position, BulletType type)
+    {
+        GameObject bullet = null;
+
+        switch (type)
+        {
+            case BulletType.PLAYER:
+                {
+                    if (playerBulletPool.Count < 1)
+                    {
+                        playerBulletPool.Enqueue(factory.CreateBullet(BulletType.PLAYER));
+                    }
+                    bullet = playerBulletPool.Dequeue();
+                    playerBulletCount = playerBulletPool.Count;
+                    playerActiveBullets++;
+                    break;
+                }
+            case BulletType.ENEMY:
+                {
+                    if (enemyBulletPool.Count < 1)
+                    {
+                        enemyBulletPool.Enqueue(factory.CreateBullet(BulletType.ENEMY));
+                    }
+                    bullet = enemyBulletPool.Dequeue();
+                    enemyBulletCount = enemyBulletPool.Count;
+                    enemyActiveBullets++;
+                    break;
+                }
+
+
+        }
+        
         bullet.SetActive(true);
         bullet.transform.position = position;
-        bullet.GetComponent<BulletBehaviour>().SetDirection(direction);
 
-        bulletCount = bulletPool.Count;
-        activeBullets++;
+
         return bullet;
     }
 
-    public void ReturnBullet(GameObject bullet)
+    public void ReturnBullet(GameObject bullet, BulletType type)
     {
         bullet.SetActive(false);
-        bulletPool.Enqueue(bullet);
-        bulletCount = bulletPool.Count;
-        activeBullets--;
+
+        switch (type)
+        {
+            case BulletType.PLAYER:
+                {
+                    playerBulletPool.Enqueue(bullet);
+                    //stats
+                    playerBulletCount = playerBulletPool.Count;
+                    playerActiveBullets--;
+                    break;
+                }
+            case BulletType.ENEMY:
+                {
+                    enemyBulletPool.Enqueue(bullet);
+                    //stats
+                    enemyBulletCount = enemyBulletPool.Count;
+                    enemyActiveBullets--;
+                    break;
+                }
+        }
+
+
+
+        playerBulletPool.Enqueue(bullet);
+        playerBulletCount = playerBulletPool.Count;
+        playerActiveBullets--;
     }
 }

@@ -21,6 +21,7 @@ public class BulletBehaviour : MonoBehaviour
     public Vector3 velocity;
     public ScreenBounds bounds;
     public BulletManager bulletManager;
+    public BulletType bulletType;
 
     void Start()
     {
@@ -46,7 +47,7 @@ public class BulletBehaviour : MonoBehaviour
            (transform.position.y > bounds.vertical.max) ||
            (transform.position.y < bounds.vertical.min))
         {
-            bulletManager.ReturnBullet(this.gameObject);
+            bulletManager.ReturnBullet(this.gameObject, bulletType);
         }
     }
 
@@ -71,6 +72,6 @@ public class BulletBehaviour : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        bulletManager.ReturnBullet(this.gameObject);
+        bulletManager.ReturnBullet(this.gameObject, bulletType);
     }
 }
